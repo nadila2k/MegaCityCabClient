@@ -9,7 +9,7 @@ function App() {
       <Routes>
         {/* Auth Routes */}
         <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-un" element={<SignUp />} />
+        <Route path="/sign-up" element={<SignUp />} />
 
         {/* Comman Routes */}
         <Route path="/"  element={<Welcome/>}/>
