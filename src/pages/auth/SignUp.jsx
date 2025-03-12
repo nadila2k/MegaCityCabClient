@@ -1,4 +1,4 @@
-import { Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
@@ -62,6 +62,7 @@ const SignUp = () => {
     vehicaleName: "",
     vehicalNumber: "",
     vehicleType: "",
+    image: null,
     roles: ROLES.DRIVER,
   });
 
@@ -83,9 +84,17 @@ const SignUp = () => {
     }
   };
 
+  const handleDriverPasswordCheck = (passwordConfrim) => {
+    if (driver.password === passwordConfrim) {
+      setIsPasswordMatch(true);
+    } else {
+      setIsPasswordMatch(false);
+    }
+  };
+
   const handleDriverInput = (e) => {
     const { name, value } = e.target;
-    setPassenger({ ...passenger, [name]: value });
+    setDriver({ ...driver, [name]: value });
   };
 
   const handlePassengerSubmit = (e) => {
@@ -100,9 +109,14 @@ const SignUp = () => {
 
   const handleDriverSubmit = (e) => {
     e.preventDefault();
-    const { passwordConfrim, ...rest } = driver;
+    const formData = new FormData();
+    for (const key in driver) {
+      if (key !== "passwordConfrim") {
+        formData.append(key, driver[key]);
+      }
+    }
     try {
-      dispatch(signUpThunk(rest));
+      dispatch(signUpThunk(formData)); 
     } catch (error) {
       console.log("Error ", error);
     }
@@ -238,7 +252,7 @@ const SignUp = () => {
           label="Email"
           margin="normal"
           variant="outlined"
-          email="email"
+          name="email"
           onChange={handleDriverInput}
         />
         <TextField
@@ -274,8 +288,21 @@ const SignUp = () => {
           margin="normal"
           variant="outlined"
           name="passwordConfrim"
-          onChange={(e) => handlePasswordCheck(e.target.value)}
+          onChange={(e) => handleDriverPasswordCheck(e.target.value)}
         />
+        {!isPasswordMatch && (
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              textAlign: "left",
+              color: "red",
+              fontWeight: "bold",
+            }}
+          >
+            Password not matched.
+          </Typography>
+        )}
         <TextField
           fullWidth
           label="License Number"
@@ -310,25 +337,35 @@ const SignUp = () => {
           sx={{ textAlign: "left" }}
           name="vehicleType"
           onChange={handleDriverInput}
+          value={driver.vehicleType}
         >
           {vehicleTypes.map((option) => (
-            <MenuItem key={option.id} value={option.value}>
+            <MenuItem key={option.id} value={option.id}>
               {option.value}
             </MenuItem>
           ))}
         </TextField>
-        {!isPasswordMatch && (
-          <Typography
-            variant="caption"
-            sx={{
-              display: "block",
-              textAlign: "left",
-              color: "red",
-              fontWeight: "bold",
-            }}
-          >
-            Password not matched.
-          </Typography>
+        <TextField
+          fullWidth
+          label="Profile Image"
+          margin="normal"
+          variant="outlined"
+          type="file"
+          name="image"
+          onChange={(e) => {
+            const file = e.target.files[0];
+            setDriver({ ...driver, image: file });
+          }}
+        />
+         {driver.image && (
+          <Box sx={{ mt: 2, textAlign: "center" }}>
+            <Typography variant="body2" sx={{fontWeight: "bold"}}>Selected Image:</Typography>
+            <img
+              src={URL.createObjectURL(driver.image)}
+              alt="Profile Preview"
+              style={{ maxWidth: "100px", height: "auto", marginTop: "10px" }}
+            />
+          </Box>
         )}
         <Button
           variant="contained"

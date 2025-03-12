@@ -13,12 +13,21 @@ const axiosInstance = axios.create({
   },
 });
 
+const setHeaders = (config) => {
+  if (config.data instanceof FormData) {
+    delete config.headers["Content-Type"];
+  } else {
+    config.headers["Content-Type"] = "application/json";
+  }
+};
+
 axiosInstance.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     if (token) {
       config.headers["Authorization"] = ` Bearer ${token}`;
     }
+    setHeaders(config);
     return config;
   },
   (error) => Promise.reject(error instanceof Error ? error : new Error(error))
