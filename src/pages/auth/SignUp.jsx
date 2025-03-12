@@ -48,6 +48,7 @@ const SignUp = () => {
     number: "",
     address: "",
     password: "",
+    roles: ROLES.PASSENGER,
   });
 
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
@@ -71,8 +72,7 @@ const SignUp = () => {
   const handlePassengerSubmit = (e) => {
     e.preventDefault();
     console.log(passenger);
-    const { password, passwordConfrim, ...rest } = passenger;
-    handlePasswordCheck(password, passwordConfrim);
+    const { passwordConfrim, ...rest } = passenger;
     try {
       dispatch(signUpThunk(rest));
     } catch (error) {
