@@ -48,8 +48,9 @@ const SignUp = () => {
     number: "",
     address: "",
     password: "",
-    passwordConfrim: "",
   });
+
+  const [isPasswordMatch, setIsPasswordMatch] = useState(true);
 
   const role = searchParams.get("role");
   let form = "";
@@ -59,11 +60,21 @@ const SignUp = () => {
     setPassenger({ ...passenger, [name]: value });
   };
 
+  const handlePasswordCheck = (passwordConfrim) => {
+    if (passenger.password === passwordConfrim) {
+      setIsPasswordMatch(true);
+    } else {
+      setIsPasswordMatch(false);
+    }
+  };
+
   const handlePassengerSubmit = (e) => {
     e.preventDefault();
     console.log(passenger);
+    const { password, passwordConfrim, ...rest } = passenger;
+    handlePasswordCheck(password, passwordConfrim);
     try {
-      dispatch(signUpThunk(passenger));
+      dispatch(signUpThunk(rest));
     } catch (error) {
       console.log("Error ", error);
     }
@@ -144,16 +155,29 @@ const SignUp = () => {
           margin="normal"
           variant="outlined"
           name="passwordConfrim"
-          onChange={handlePassengerInput}
-          value={passenger.passwordConfrim}
+          onChange={(e) => handlePasswordCheck(e.target.value)}
           required
         />
+        {!isPasswordMatch && (
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              textAlign: "left",
+              color: "red",
+              fontWeight: "bold",
+            }}
+          >
+            Password not matched.
+          </Typography>
+        )}
         <Button
           variant="contained"
           color="primary"
           fullWidth
           sx={{ mt: 2 }}
           onClick={handlePassengerSubmit}
+          disabled={!isPasswordMatch}
         >
           Sign Up
         </Button>
