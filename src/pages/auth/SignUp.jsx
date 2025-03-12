@@ -1,8 +1,10 @@
 import { Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { ROLES } from "../../constants/app.constants";
+import { signUpThunk } from "../../store/thunks/authThunks";
+import { useDispatch } from "react-redux";
 
 const vehicleTypes = [
   {
@@ -36,11 +38,36 @@ const vehicleTypes = [
 ];
 
 const SignUp = () => {
+  const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
 
-  const role = searchParams.get("role");
+  const [passenger, setPassenger] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    number: "",
+    address: "",
+    password: "",
+    passwordConfrim: "",
+  });
 
+  const role = searchParams.get("role");
   let form = "";
+
+  const handlePassengerInput = (e) => {
+    const { name, value } = e.target;
+    setPassenger({ ...passenger, [name]: value });
+  };
+
+  const handlePassengerSubmit = (e) => {
+    e.preventDefault();
+    console.log(passenger);
+    try {
+      dispatch(signUpThunk(passenger));
+    } catch (error) {
+      console.log("Error ", error);
+    }
+  };
 
   if (role === ROLES.PASSENGER) {
     form = (
@@ -53,19 +80,40 @@ const SignUp = () => {
           label="First Name"
           margin="normal"
           variant="outlined"
+          name="firstName"
+          onChange={handlePassengerInput}
+          value={passenger.firstName}
+          required
         />
         <TextField
           fullWidth
           label="Last Name"
           margin="normal"
           variant="outlined"
+          name="lastName"
+          onChange={handlePassengerInput}
+          value={passenger.lastName}
+          required
         />
-        <TextField fullWidth label="Email" margin="normal" variant="outlined" />
+        <TextField
+          fullWidth
+          label="Email"
+          margin="normal"
+          variant="outlined"
+          name="email"
+          onChange={handlePassengerInput}
+          value={passenger.email}
+          required
+        />
         <TextField
           fullWidth
           label="Number"
           margin="normal"
           variant="outlined"
+          name="number"
+          onChange={handlePassengerInput}
+          value={passenger.number}
+          required
         />
         <TextField
           fullWidth
@@ -73,6 +121,10 @@ const SignUp = () => {
           margin="normal"
           variant="outlined"
           multiline
+          name="address"
+          onChange={handlePassengerInput}
+          value={passenger.address}
+          required
         />
         <TextField
           fullWidth
@@ -80,6 +132,10 @@ const SignUp = () => {
           type="password"
           margin="normal"
           variant="outlined"
+          name="password"
+          onChange={handlePassengerInput}
+          value={passenger.password}
+          required
         />
         <TextField
           fullWidth
@@ -87,8 +143,18 @@ const SignUp = () => {
           type="password"
           margin="normal"
           variant="outlined"
+          name="passwordConfrim"
+          onChange={handlePassengerInput}
+          value={passenger.passwordConfrim}
+          required
         />
-        <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+          onClick={handlePassengerSubmit}
+        >
           Sign Up
         </Button>
       </>
