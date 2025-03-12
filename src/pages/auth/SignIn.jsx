@@ -48,7 +48,7 @@ const SignIn = () => {
         >
           Already have an account ?{" "}
           <Link to={`/sign-up?role=${ROLES.PASSENGER}`}>Passenger</Link> |{" "}
-          <Link to={`/sign-up?role=${ROLES.ADMIN}`}>Driver</Link>
+          <Link to={`/sign-up?role=${ROLES.DRIVER}`}>Driver</Link>
         </Typography>
       </Paper>
     </Grid>

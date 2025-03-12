@@ -51,6 +51,20 @@ const SignUp = () => {
     roles: ROLES.PASSENGER,
   });
 
+  const [driver, setDriver] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    mobileNumber: "",
+    address: "",
+    password: "",
+    licenseNumber: "",
+    vehicaleName: "",
+    vehicalNumber: "",
+    vehicleType: "",
+    roles: ROLES.DRIVER,
+  });
+
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
 
   const role = searchParams.get("role");
@@ -69,10 +83,24 @@ const SignUp = () => {
     }
   };
 
+  const handleDriverInput = (e) => {
+    const { name, value } = e.target;
+    setPassenger({ ...passenger, [name]: value });
+  };
+
   const handlePassengerSubmit = (e) => {
     e.preventDefault();
-    console.log(passenger);
     const { passwordConfrim, ...rest } = passenger;
+    try {
+      dispatch(signUpThunk(rest));
+    } catch (error) {
+      console.log("Error ", error);
+    }
+  };
+
+  const handleDriverSubmit = (e) => {
+    e.preventDefault();
+    const { passwordConfrim, ...rest } = driver;
     try {
       dispatch(signUpThunk(rest));
     } catch (error) {
@@ -194,19 +222,32 @@ const SignUp = () => {
           label="First Name"
           margin="normal"
           variant="outlined"
+          name="firstName"
+          onChange={handleDriverInput}
         />
         <TextField
           fullWidth
           label="Last Name"
           margin="normal"
           variant="outlined"
+          name="lastName"
+          onChange={handleDriverInput}
         />
-        <TextField fullWidth label="Email" margin="normal" variant="outlined" />
+        <TextField
+          fullWidth
+          label="Email"
+          margin="normal"
+          variant="outlined"
+          email="email"
+          onChange={handleDriverInput}
+        />
         <TextField
           fullWidth
           label="Phone Number"
           margin="normal"
           variant="outlined"
+          name="mobileNumber"
+          onChange={handleDriverInput}
         />
         <TextField
           fullWidth
@@ -214,6 +255,8 @@ const SignUp = () => {
           margin="normal"
           variant="outlined"
           multiline
+          name="address"
+          onChange={handleDriverInput}
         />
         <TextField
           fullWidth
@@ -221,6 +264,8 @@ const SignUp = () => {
           type="password"
           margin="normal"
           variant="outlined"
+          name="password"
+          onChange={handleDriverInput}
         />
         <TextField
           fullWidth
@@ -228,24 +273,32 @@ const SignUp = () => {
           type="password"
           margin="normal"
           variant="outlined"
+          name="passwordConfrim"
+          onChange={(e) => handlePasswordCheck(e.target.value)}
         />
         <TextField
           fullWidth
           label="License Number"
           margin="normal"
           variant="outlined"
+          name="licenseNumber"
+          onChange={handleDriverInput}
         />
         <TextField
           fullWidth
           label="Vehicale Name"
           margin="normal"
           variant="outlined"
+          name="vehicaleName"
+          onChange={handleDriverInput}
         />
         <TextField
           fullWidth
           label="Vehical Number"
           margin="normal"
           variant="outlined"
+          name="vehicalNumber"
+          onChange={handleDriverInput}
         />
         <TextField
           id="outlined-select-currency"
@@ -255,6 +308,8 @@ const SignUp = () => {
           margin="normal"
           fullWidth
           sx={{ textAlign: "left" }}
+          name="vehicleType"
+          onChange={handleDriverInput}
         >
           {vehicleTypes.map((option) => (
             <MenuItem key={option.id} value={option.value}>
@@ -262,7 +317,27 @@ const SignUp = () => {
             </MenuItem>
           ))}
         </TextField>
-        <Button variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+        {!isPasswordMatch && (
+          <Typography
+            variant="caption"
+            sx={{
+              display: "block",
+              textAlign: "left",
+              color: "red",
+              fontWeight: "bold",
+            }}
+          >
+            Password not matched.
+          </Typography>
+        )}
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          sx={{ mt: 2 }}
+          onClick={handleDriverSubmit}
+          disabled={!isPasswordMatch}
+        >
           Sign Up
         </Button>
       </>
