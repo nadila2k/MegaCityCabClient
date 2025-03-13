@@ -6,9 +6,9 @@ import { Provider } from "react-redux";
 import { persistor, store } from "./store/store";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ROLES } from "./constants/app.constants";
-import PassengerLayout from "./layouts/PassengerLayout.jsx";
 import Home from "./pages/passenger/Home/index.jsx";
 import { PersistGate } from "redux-persist/integration/react";
+import PassengerLayout from "./layouts/PassengerLayout/index.jsx";
 
 function App() {
   const { PASSENGER } = ROLES;

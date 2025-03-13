@@ -16,3 +16,15 @@ export const signUpThunk = createAsyncThunk(
     }
   }
 );
+
+export const signInThunk = createAsyncThunk(
+  "auth/sign_in",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post(`/auth/sign-in`, formData);
+      return response;
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
