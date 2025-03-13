@@ -404,7 +404,7 @@ const SignUp = () => {
           variant="caption"
           sx={{ display: "block", mt: 2, textAlign: "left" }}
         >
-          Do have an account ? <Link to={`/sign-in`}>SignIn</Link>
+          Already have an account ? <Link to={`/sign-in`}>SignIn</Link>
         </Typography>
       </Paper>
     </Grid>

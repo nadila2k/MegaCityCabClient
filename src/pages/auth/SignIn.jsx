@@ -46,7 +46,7 @@ const SignIn = () => {
           variant="caption"
           sx={{ display: "block", mt: 2, textAlign: "left" }}
         >
-          Already have an account ?{" "}
+          Create new account ?{" "}
           <Link to={`/sign-up?role=${ROLES.PASSENGER}`}>Passenger</Link> |{" "}
           <Link to={`/sign-up?role=${ROLES.DRIVER}`}>Driver</Link>
         </Typography>
