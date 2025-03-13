@@ -53,7 +53,7 @@ const SignUp = () => {
     firstName: "",
     lastName: "",
     email: "",
-    number: "",
+    mobileNumber: "",
     address: "",
     password: "",
     roles: ROLES.PASSENGER,
@@ -112,7 +112,7 @@ const SignUp = () => {
     try {
       const response = await dispatch(signUpThunk(rest)).unwrap();
       if (response.status === "SUCCESS") {
-        navigate(`/${roleUrl}`);
+        // navigate(`/${roleUrl}`);
       }
     } catch (error) {
       console.log("Error ", error);
@@ -175,9 +175,9 @@ const SignUp = () => {
           label="Number"
           margin="normal"
           variant="outlined"
-          name="number"
+          name="mobileNumber"
           onChange={handlePassengerInput}
-          value={passenger.number}
+          value={passenger.mobileNumber}
           required
         />
         <TextField
