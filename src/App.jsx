@@ -7,11 +7,14 @@ import { persistor, store } from "./store/store";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ROLES } from "./constants/app.constants";
 import Home from "./pages/passenger/Home/index.jsx";
+import AdminHome from "./pages/admin/Home/index.jsx";
 import { PersistGate } from "redux-persist/integration/react";
 import PassengerLayout from "./layouts/PassengerLayout/index.jsx";
+import AdminLayout from "./layouts/AdminLayout/index.jsx";
+import VehicleType from "./pages/admin/VehicleType/index.jsx";
 
 function App() {
-  const { PASSENGER } = ROLES;
+  const { PASSENGER, ADMIN } = ROLES;
 
   return (
     <Provider store={store}>
@@ -37,6 +40,17 @@ function App() {
             {/* Driver Routes */}
 
             {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute role={ADMIN}>
+                  <AdminLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<AdminHome />} />
+              <Route path="vehicle-type" element={<VehicleType />} />
+            </Route>
 
             {/* Comman Routes */}
             <Route path="/" element={<Welcome />} />
