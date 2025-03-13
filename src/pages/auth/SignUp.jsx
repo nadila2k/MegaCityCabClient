@@ -112,7 +112,7 @@ const SignUp = () => {
     try {
       const response = await dispatch(signUpThunk(rest)).unwrap();
       if (response.status === "SUCCESS") {
-        // navigate(`/${roleUrl}`);
+        navigate(`/${roleUrl}`);
       }
     } catch (error) {
       console.log("Error ", error);
