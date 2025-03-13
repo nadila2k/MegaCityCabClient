@@ -1,7 +1,14 @@
-import { Box, Button, MenuItem, Paper, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  MenuItem,
+  Paper,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import React, { useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ROLES } from "../../constants/app.constants";
 import { signUpThunk } from "../../store/thunks/authThunks";
 import { useDispatch } from "react-redux";
@@ -40,6 +47,7 @@ const vehicleTypes = [
 const SignUp = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   const [passenger, setPassenger] = useState({
     firstName: "",
@@ -69,6 +77,7 @@ const SignUp = () => {
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
 
   const role = searchParams.get("role");
+  const roleUrl = role.toLowerCase();
   let form = "";
 
   const handlePassengerInput = (e) => {
@@ -97,11 +106,14 @@ const SignUp = () => {
     setDriver({ ...driver, [name]: value });
   };
 
-  const handlePassengerSubmit = (e) => {
+  const handlePassengerSubmit = async (e) => {
     e.preventDefault();
     const { passwordConfrim, ...rest } = passenger;
     try {
-      dispatch(signUpThunk(rest));
+      const response = await dispatch(signUpThunk(rest)).unwrap();
+      if (response.status === "SUCCESS") {
+        navigate(`/${roleUrl}`);
+      }
     } catch (error) {
       console.log("Error ", error);
     }
@@ -116,7 +128,7 @@ const SignUp = () => {
       }
     }
     try {
-      dispatch(signUpThunk(formData)); 
+      dispatch(signUpThunk(formData));
     } catch (error) {
       console.log("Error ", error);
     }
@@ -357,9 +369,11 @@ const SignUp = () => {
             setDriver({ ...driver, image: file });
           }}
         />
-         {driver.image && (
+        {driver.image && (
           <Box sx={{ mt: 2, textAlign: "center" }}>
-            <Typography variant="body2" sx={{fontWeight: "bold"}}>Selected Image:</Typography>
+            <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+              Selected Image:
+            </Typography>
             <img
               src={URL.createObjectURL(driver.image)}
               alt="Profile Preview"
