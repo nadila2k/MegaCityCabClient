@@ -20,6 +20,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import BookIcon from '@mui/icons-material/Book';
+import ProfileBadge from "../../components/ProfileBadge";
 
 const drawerWidth = 240;
 
@@ -135,6 +136,7 @@ export default function PassengerLayout() {
           <Typography variant="h6" noWrap component="div">
             {import.meta.env.VITE_API_APP_NAME}
           </Typography>
+          <ProfileBadge />
         </Toolbar>
       </AppBar>
       <Drawer variant="permanent" open={open}>
