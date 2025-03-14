@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ROLES } from "./constants/app.constants";
 import Home from "./pages/passenger/Home/index.jsx";
 import AdminHome from "./pages/admin/Home/index.jsx";
+import DriverHome from "./pages/driver/Home/index.jsx";
 
 import PassengerLayout from "./layouts/PassengerLayout/index.jsx";
 import AdminLayout from "./layouts/AdminLayout/index.jsx";
@@ -15,9 +16,11 @@ import { vehicleTypeListThunk } from "./store/thunks/vehicleTypeThunks.js";
 import Booking from "./pages/passenger/Booking/index.jsx";
 import useAuth from "./hooks/useAuth.jsx";
 import { useEffect } from "react";
+import DriverLayout from "./layouts/DriverLayout/index.jsx";
+import PickBooking from "./pages/driver/PickBooking/index.jsx";
 
 function App() {
-  const { PASSENGER, ADMIN } = ROLES;
+  const { PASSENGER, ADMIN, DRIVER } = ROLES;
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
 
@@ -48,6 +51,17 @@ function App() {
         </Route>
 
         {/* Driver Routes */}
+        <Route
+          path="/driver"
+          element={
+            <ProtectedRoute role={DRIVER}>
+              <DriverLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route index element={<DriverHome />} />
+          <Route path="pick-booking" element={<PickBooking />} />
+        </Route>
 
         {/* Admin Routes */}
         <Route
