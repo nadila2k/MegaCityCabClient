@@ -179,6 +179,35 @@ const Booking = () => {
     return dayjs(dateString).format("YYYY-MM-DD");
   };
 
+  const downloadBill = (booking) => {
+    const billContent = `
+      Booking Bill
+      --------------------------------
+      Date: ${formatDate(booking.date)}
+      Pickup Location: ${booking.pickupLocation}
+      Destination Location: ${booking.destinationLocation}
+      Distance: ${booking.totalDistanceKM} KM
+      Price per KM: Rs. ${booking.pricePerKM}
+      Total Price: Rs. ${booking.totalPrice.toFixed(2)}
+      Status: ${booking.bookingStatus}
+      Vehicle Type: ${booking.vehicleType.name}
+      Passenger: ${booking.passenger.firstName} ${booking.passenger.lastName}
+      --------------------------------
+    `;
+
+    const blob = new Blob([billContent], { type: "text/plain" });
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `Bill_Booking_${booking.id}.txt`; 
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -219,6 +248,7 @@ const Booking = () => {
                   <TableCell>Status</TableCell>
                   <TableCell>Vehicle Type</TableCell>
                   <TableCell>Passenger</TableCell>
+                  <TableCell>Action</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -234,6 +264,15 @@ const Booking = () => {
                     <TableCell>{booking.vehicleType.name}</TableCell>
                     <TableCell>
                       {booking.passenger.firstName} {booking.passenger.lastName}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => downloadBill(booking)}
+                      >
+                        Download Bill
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
