@@ -19,6 +19,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
+import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 
 const drawerWidth = 240;
 
@@ -230,7 +231,7 @@ export default function AdminLayout() {
                       },
                 ]}
               >
-                <HomeIcon />
+                <DirectionsCarFilledIcon />
               </ListItemIcon>
               <ListItemText
                 primary={`Vehicle Type`}

@@ -5,7 +5,7 @@ import ModalUi from "../../../components/ModalUi";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useDispatch, useSelector } from "react-redux";
-import dayjs from "dayjs"; 
+import dayjs from "dayjs";
 import { createBookingThunk } from "../../../store/thunks/bookingThunk";
 
 const generateRandomDistance = () => {
@@ -55,7 +55,7 @@ const Booking = () => {
       destinationLocation: formState.destinationLocation,
       totalDistanceKM: parseFloat(formState.totalDistanceKM),
       pricePerKM: parseFloat(formState.pricePerKM),
-      vehicleTypeId: formState.vehicleType, 
+      vehicleTypeId: formState.vehicleType,
     };
 
     try {
@@ -91,10 +91,12 @@ const Booking = () => {
 
   return (
     <>
-      <PageTitle title="Booking" />
-      <Button variant="contained" onClick={handleClickOpen}>
-        Create New Booking
-      </Button>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <PageTitle title="Booking" />
+        <Button variant="contained" onClick={handleClickOpen}>
+          Create New Booking
+        </Button>
+      </Box>
 
       {/* Display booking status */}
       {status === "pending" && <Typography>Loading...</Typography>}
@@ -180,7 +182,9 @@ const Booking = () => {
                 <Button
                   key={option.id}
                   variant={
-                    formState.vehicleType === option.id ? "contained" : "outlined"
+                    formState.vehicleType === option.id
+                      ? "contained"
+                      : "outlined"
                   }
                   onClick={() => handleTransportSelect(option)}
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}

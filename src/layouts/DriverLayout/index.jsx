@@ -19,6 +19,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
+import WavingHandIcon from '@mui/icons-material/WavingHand';
 
 const drawerWidth = 240;
 
@@ -230,7 +231,7 @@ export default function DriverLayout() {
                       },
                 ]}
               >
-                <HomeIcon />
+                <WavingHandIcon />
               </ListItemIcon>
               <ListItemText
                 primary={`Pick Booking`}
