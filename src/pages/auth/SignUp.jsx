@@ -7,42 +7,12 @@ import {
   Typography,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Add useEffect
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ROLES } from "../../constants/app.constants";
 import { signUpThunk } from "../../store/thunks/authThunks";
 import { useDispatch } from "react-redux";
-
-const vehicleTypes = [
-  {
-    id: 1,
-    value: "Sedan",
-  },
-  {
-    id: 2,
-    value: "Tuk",
-  },
-  {
-    id: 3,
-    value: "Van",
-  },
-  {
-    id: 4,
-    value: "SUV",
-  },
-  {
-    id: 5,
-    value: "Minibus",
-  },
-  {
-    id: 6,
-    value: "Scooter",
-  },
-  {
-    id: 7,
-    value: "Jeep",
-  },
-];
+import axios from "axios"; // Import axios for API calls
 
 const SignUp = () => {
   const dispatch = useDispatch();
@@ -67,18 +37,32 @@ const SignUp = () => {
     address: "",
     password: "",
     licenseNumber: "",
-    vehicaleName: "",
+    vehicleName: "",
     vehicalNumber: "",
-    vehicleType: "",
+    vehicleTypeId: "", 
     image: null,
     roles: ROLES.DRIVER,
   });
 
+  const [vehicleTypes, setVehicleTypes] = useState([]); // State for vehicle types from API
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
 
   const role = searchParams.get("role");
   const roleUrl = role.toLowerCase();
-  let form = "";
+
+  // Fetch vehicle types from API when component mounts
+  useEffect(() => {
+    const fetchVehicleTypes = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/v1/vehicle/all/vehicles/public");
+        setVehicleTypes(response.data.data);
+      } catch (error) {
+        console.error("Error fetching vehicle types:", error);
+      }
+    };
+
+    fetchVehicleTypes();
+  }, []);
 
   const handlePassengerInput = (e) => {
     const { name, value } = e.target;
@@ -86,19 +70,11 @@ const SignUp = () => {
   };
 
   const handlePasswordCheck = (passwordConfrim) => {
-    if (passenger.password === passwordConfrim) {
-      setIsPasswordMatch(true);
-    } else {
-      setIsPasswordMatch(false);
-    }
+    setIsPasswordMatch(passenger.password === passwordConfrim);
   };
 
   const handleDriverPasswordCheck = (passwordConfrim) => {
-    if (driver.password === passwordConfrim) {
-      setIsPasswordMatch(true);
-    } else {
-      setIsPasswordMatch(false);
-    }
+    setIsPasswordMatch(driver.password === passwordConfrim);
   };
 
   const handleDriverInput = (e) => {
@@ -112,6 +88,15 @@ const SignUp = () => {
     try {
       const response = await dispatch(signUpThunk(rest)).unwrap();
       if (response.status === "SUCCESS") {
+        setPassenger({
+          firstName: "",
+          lastName: "",
+          email: "",
+          mobileNumber: "",
+          address: "",
+          password: "",
+          roles: ROLES.PASSENGER,
+        })
         navigate(`/${roleUrl}`);
       }
     } catch (error) {
@@ -119,7 +104,7 @@ const SignUp = () => {
     }
   };
 
-  const handleDriverSubmit = (e) => {
+  const handleDriverSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     for (const key in driver) {
@@ -128,11 +113,30 @@ const SignUp = () => {
       }
     }
     try {
-      dispatch(signUpThunk(formData));
+      const response = await dispatch(signUpThunk(formData)).unwrap();
+      if (response.status === "SUCCESS") {
+        setDriver({
+          firstName: "",
+          lastName: "",
+          email: "",
+          mobileNumber: "",
+          address: "",
+          password: "",
+          licenseNumber: "",
+          vehicleName: "",
+          vehicleNumber: "",
+          vehicleTypeId: "", 
+          image: null,
+          roles: ROLES.DRIVER,
+        })
+        navigate(`/${roleUrl}`);
+      }
     } catch (error) {
       console.log("Error ", error);
     }
   };
+
+  let form = "";
 
   if (role === ROLES.PASSENGER) {
     form = (
@@ -295,7 +299,7 @@ const SignUp = () => {
         />
         <TextField
           fullWidth
-          label="Password Confrim"
+          label="Password Confirm"
           type="password"
           margin="normal"
           variant="outlined"
@@ -325,35 +329,34 @@ const SignUp = () => {
         />
         <TextField
           fullWidth
-          label="Vehicale Name"
+          label="Vehicle Name"
           margin="normal"
           variant="outlined"
-          name="vehicaleName"
+          name="vehicleName"
           onChange={handleDriverInput}
         />
         <TextField
           fullWidth
-          label="Vehical Number"
+          label="Vehicle Number"
           margin="normal"
           variant="outlined"
-          name="vehicalNumber"
+          name="vehicleNumber"
           onChange={handleDriverInput}
         />
         <TextField
           id="outlined-select-currency"
           select
           label="Select vehicle type"
-          defaultValue="Sedan"
           margin="normal"
           fullWidth
           sx={{ textAlign: "left" }}
-          name="vehicleType"
+          name="vehicleTypeId"
           onChange={handleDriverInput}
-          value={driver.vehicleType}
+          value={driver.vehicleTypeId || ""} 
         >
           {vehicleTypes.map((option) => (
             <MenuItem key={option.id} value={option.id}>
-              {option.value}
+              {option.name}
             </MenuItem>
           ))}
         </TextField>
@@ -418,7 +421,7 @@ const SignUp = () => {
           variant="caption"
           sx={{ display: "block", mt: 2, textAlign: "left" }}
         >
-          Already have an account ? <Link to={`/sign-in`}>SignIn</Link>
+          Already have an account? <Link to={`/sign-in`}>SignIn</Link>
         </Typography>
       </Paper>
     </Grid>
