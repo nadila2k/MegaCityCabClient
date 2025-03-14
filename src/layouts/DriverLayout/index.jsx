@@ -21,6 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import WavingHandIcon from '@mui/icons-material/WavingHand';
 import ProfileBadge from "../../components/ProfileBadge";
+import ListIcon from '@mui/icons-material/List';
 
 const drawerWidth = 240;
 
@@ -236,7 +237,56 @@ export default function DriverLayout() {
                 <WavingHandIcon />
               </ListItemIcon>
               <ListItemText
-                primary={`Pick Booking`}
+                primary={`Pick Bookings`}
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: "initial",
+                    }
+                  : {
+                      justifyContent: "center",
+                    },
+              ]}
+              component={NavLink}
+              to={`confirmed-booking`}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: "center",
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: "auto",
+                      },
+                ]}
+              >
+                <ListIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={`Confirmed Bookings`}
                 sx={[
                   open
                     ? {

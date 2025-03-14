@@ -18,6 +18,8 @@ import useAuth from "./hooks/useAuth.jsx";
 import { useEffect } from "react";
 import DriverLayout from "./layouts/DriverLayout/index.jsx";
 import PickBooking from "./pages/driver/PickBooking/index.jsx";
+import ConfirmedBooking from "./pages/driver/ConfirmedBooking/index.jsx";
+
 
 function App() {
   const { PASSENGER, ADMIN, DRIVER } = ROLES;
@@ -61,6 +63,8 @@ function App() {
         >
           <Route index element={<DriverHome />} />
           <Route path="pick-booking" element={<PickBooking />} />
+          <Route path="confirmed-booking" element={<ConfirmedBooking />} />
+          <Route path="ongoing" element={<ConfirmedBooking />} />
         </Route>
 
         {/* Admin Routes */}
