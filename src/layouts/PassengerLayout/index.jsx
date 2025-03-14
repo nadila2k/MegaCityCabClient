@@ -19,6 +19,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
+import BookIcon from '@mui/icons-material/Book';
 
 const drawerWidth = 240;
 
@@ -132,7 +133,7 @@ export default function PassengerLayout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            {import.meta.env.VITE_API_APP_NAME}
           </Typography>
         </Toolbar>
       </AppBar>
@@ -230,7 +231,7 @@ export default function PassengerLayout() {
                       },
                 ]}
               >
-                <HomeIcon />
+                <BookIcon />
               </ListItemIcon>
               <ListItemText
                 primary={`Booking`}

@@ -132,7 +132,7 @@ export default function DriverLayout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Mini variant drawer
+            {import.meta.env.VITE_API_APP_NAME}
           </Typography>
         </Toolbar>
       </AppBar>
