@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import DriverLayout from "./layouts/DriverLayout/index.jsx";
 import PickBooking from "./pages/driver/PickBooking/index.jsx";
 import ConfirmedBooking from "./pages/driver/ConfirmedBooking/index.jsx";
+import Completed from "./pages/driver/Completed/index.jsx";
 
 
 function App() {
@@ -64,7 +65,7 @@ function App() {
           <Route index element={<DriverHome />} />
           <Route path="pick-booking" element={<PickBooking />} />
           <Route path="confirmed-booking" element={<ConfirmedBooking />} />
-          <Route path="ongoing" element={<ConfirmedBooking />} />
+          <Route path="completed" element={<Completed />} />
         </Route>
 
         {/* Admin Routes */}
