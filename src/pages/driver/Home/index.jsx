@@ -20,16 +20,59 @@ import PersonIcon from "@mui/icons-material/Person";
 import axios from "axios";
 
 const Home = () => {
-  const dashboardData = {
-    completedTours: 12,
-    totalEarnings: 450.75,
-  };
-
-  const [ongoingBooking, setOngoingBooking] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState(() => {
+    const storedData = localStorage.getItem("dashboardData");
+    return storedData
+      ? JSON.parse(storedData)
+      : { completedTours: 0, totalEarnings: 0 };
+  });
+  const [ongoingBooking, setOngoingBooking] = useState(() => {
+    const storedBooking = localStorage.getItem("ongoingBooking");
+    return storedBooking ? JSON.parse(storedBooking) : null;
+  });
+  const [loadingDashboard, setLoadingDashboard] = useState(true);
+  const [loadingOngoing, setLoadingOngoing] = useState(true);
   const [error, setError] = useState(null);
+  const [showOngoingTrip, setShowOngoingTrip] = useState(true);
+  const [paymentStatus, setPaymentStatus] = useState(() => {
+    const storedStatus = localStorage.getItem("paymentStatus");
+    return storedStatus || "PENDING"; // Default to PENDING if not set
+  });
 
-  // Fetch ongoing booking from API on component mount
+  // Fetch completed bookings for dashboard data
+  useEffect(() => {
+    const fetchCompletedBookings = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/booking/get/booking/driver/completed",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const completedBookings = response.data.data;
+        const completedTours = completedBookings.length;
+        const totalEarnings = completedBookings.reduce(
+          (sum, booking) => sum + booking.totalPrice,
+          0
+        );
+        setDashboardData({ completedTours, totalEarnings });
+        localStorage.setItem(
+          "dashboardData",
+          JSON.stringify({ completedTours, totalEarnings })
+        );
+        setLoadingDashboard(false);
+      } catch (err) {
+        setError(err.message);
+        setLoadingDashboard(false);
+      }
+    };
+
+    fetchCompletedBookings();
+  }, []);
+
+  // Fetch ongoing booking
   useEffect(() => {
     const fetchOngoingBooking = async () => {
       try {
@@ -41,15 +84,26 @@ const Home = () => {
             },
           }
         );
-        // Assuming the response contains a single ongoing booking or an array with one item
         const booking = Array.isArray(response.data.data)
           ? response.data.data[0]
           : response.data.data;
-        setOngoingBooking(booking || null);
-        setLoading(false);
+        if (booking) {
+          setOngoingBooking(booking);
+          setPaymentStatus(booking.payment.paymentStatus);
+          localStorage.setItem("ongoingBooking", JSON.stringify(booking));
+          localStorage.setItem(
+            "paymentStatus",
+            booking.payment.paymentStatus
+          );
+        } else {
+          setOngoingBooking(null);
+          localStorage.removeItem("ongoingBooking");
+          localStorage.removeItem("paymentStatus");
+        }
+        setLoadingOngoing(false);
       } catch (err) {
         setError(err.message);
-        setLoading(false);
+        setLoadingOngoing(false);
       }
     };
 
@@ -84,8 +138,25 @@ const Home = () => {
     }
   };
 
+  // Function to get payment status icon
+  const getPaymentStatusIcon = (status) => {
+    switch (status) {
+      case "PENDING":
+        return <PendingIcon sx={{ color: "#ff9800" }} />;
+      case "PAID":
+        return <CheckCircleIcon sx={{ color: "#388e3c" }} />;
+      default:
+        return null;
+    }
+  };
+
   // Handle complete trip button click
   const handleCompleteTrip = async (booking) => {
+    if (booking.payment.paymentStatus !== "PAID") {
+      alert("Payment not completed");
+      return;
+    }
+
     try {
       await axios.put(
         `http://localhost:8080/api/v1/booking/update/${booking.id}/driver?bookingStatus=COMPLETED`,
@@ -98,9 +169,23 @@ const Home = () => {
       );
 
       // Update local state and dashboard data
-      setOngoingBooking({ ...booking, bookingStatus: "COMPLETED" });
-      dashboardData.completedTours += 1;
-      dashboardData.totalEarnings += booking.totalPrice; 
+      const updatedBooking = { ...booking, bookingStatus: "COMPLETED" };
+      setOngoingBooking(updatedBooking);
+      setDashboardData((prev) => {
+        const newData = {
+          completedTours: prev.completedTours + 1,
+          totalEarnings: prev.totalEarnings + booking.totalPrice,
+        };
+        localStorage.setItem("dashboardData", JSON.stringify(newData));
+        return newData;
+      });
+      setPaymentStatus(booking.payment.paymentStatus);
+      localStorage.setItem(
+        "paymentStatus",
+        booking.payment.paymentStatus
+      );
+      localStorage.setItem("ongoingBooking", JSON.stringify(updatedBooking));
+      setShowOngoingTrip(false); // Hide ongoing trip section
 
       console.log(`Booking ID ${booking.id} updated to COMPLETED`);
     } catch (err) {
@@ -114,59 +199,73 @@ const Home = () => {
       <PageTitle title="Driver Home" />
 
       {/* Dashboard Boxes */}
-      <Grid container spacing={3} sx={{ mt: 2 }}>
-        <Grid item xs={12} sm={6}>
-          <Card
-            sx={{
-              backgroundColor: "#4caf50",
-              color: "white",
-              borderRadius: 2,
-              boxShadow: 3,
-            }}
-          >
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Completed Tours
-              </Typography>
-              <Typography variant="h4" fontWeight="bold">
-                {dashboardData.completedTours}
-              </Typography>
-            </CardContent>
-          </Card>
+      {loadingDashboard ? (
+        <Typography>Loading dashboard...</Typography>
+      ) : error ? (
+        <Typography color="error">Error: {error}</Typography>
+      ) : (
+        <Grid container spacing={3} sx={{ mt: 2 }}>
+          <Grid item xs={12} sm={6}>
+            <Card
+              sx={{
+                backgroundColor: "#4caf50",
+                color: "white",
+                borderRadius: 2,
+                boxShadow: 3,
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Completed Tours
+                </Typography>
+                <Typography variant="h4" fontWeight="bold">
+                  {dashboardData.completedTours}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Card
+              sx={{
+                backgroundColor: "#1976d2",
+                color: "white",
+                borderRadius: 2,
+                boxShadow: 3,
+              }}
+            >
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Total Earnings
+                </Typography>
+                <Typography variant="h4" fontWeight="bold">
+                  Rs. {dashboardData.totalEarnings.toFixed(2)}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Card
-            sx={{
-              backgroundColor: "#1976d2",
-              color: "white",
-              borderRadius: 2,
-              boxShadow: 3,
-            }}
-          >
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Total Earnings
-              </Typography>
-              <Typography variant="h4" fontWeight="bold">
-                Rs. {dashboardData.totalEarnings.toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+      )}
 
       {/* Ongoing Trip Section */}
       <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" gutterBottom>
-          Ongoing Trip
-        </Typography>
-        {loading ? (
+        <Box display="flex" alignItems="center" mb={2}>
+          <Typography variant="h5" gutterBottom>
+            Ongoing Trip
+          </Typography>
+          {!showOngoingTrip && paymentStatus === "PAID" && (
+            <Typography variant="body1" ml={2}>
+              (Completed Trips: {dashboardData.completedTours}, Total Earnings: Rs.{" "}
+              {dashboardData.totalEarnings.toFixed(2)})
+            </Typography>
+          )}
+        </Box>
+        {loadingOngoing ? (
           <Typography>Loading...</Typography>
         ) : error ? (
           <Typography color="error">Error: {error}</Typography>
         ) : !ongoingBooking ? (
           <Typography>No ongoing trip at the moment.</Typography>
-        ) : (
+        ) : showOngoingTrip ? (
           <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Box display="flex" alignItems="center" mb={1}>
@@ -223,18 +322,27 @@ const Home = () => {
                 <Typography variant="body1">
                   <strong>Total Price:</strong> Rs. {ongoingBooking.totalPrice.toFixed(2)}
                 </Typography>
+                <Box display="flex" alignItems="center" ml={2}>
+                  {getPaymentStatusIcon(paymentStatus)}
+                  <Typography variant="body1" ml={1}>
+                    {paymentStatus}
+                  </Typography>
+                </Box>
               </Box>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleCompleteTrip(ongoingBooking)}
-                fullWidth
-                disabled={ongoingBooking.bookingStatus === "COMPLETED"}
-              >
-                Completed
-              </Button>
+              {ongoingBooking.bookingStatus !== "COMPLETED" && (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleCompleteTrip(ongoingBooking)}
+                  fullWidth
+                >
+                  Completed
+                </Button>
+              )}
             </CardContent>
           </Card>
+        ) : (
+          <Typography>Trip completed.</Typography>
         )}
       </Box>
     </Box>
