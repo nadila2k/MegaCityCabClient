@@ -1,0 +1,77 @@
+.root {
+  text-align: center;
+  padding: 20px;
+  background-color: #f5f5f5; /* Light background for contrast */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+
+.authButton {
+  margin-left: 10px;
+}
+
+.hero {
+  margin-top: 50px;
+  text-align: center;
+}
+
+.heroTitle {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.heroSubtitle {
+  color: gray;
+  margin-bottom: 20px;
+}
+
+.heroText {
+  color: #424242;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ctaButton {
+  background-color: #ff5722; /* Deep Orange */
+  color: white;
+}
+
+.features {
+  margin-top: 50px;
+}
+
+.benefits {
+  margin-top: 60px;
+  text-align: left;
+}
+
+.sectionTitle {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.cta {
+  margin-top: 60px;
+  padding: 40px 0;
+  background-color: #e0f7fa; /* Light cyan background */
+  border-radius: 8px;
+}
+
+.ctaText {
+  color: #424242;
+  margin-bottom: 20px;
+}
