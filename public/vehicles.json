@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Tuk",
+    "image_url": "https://res.cloudinary.com/dfd94nv9q/image/upload/v1741906974/taxi/tuk-tuk_aloo7y.png",
+    "price": 30
+  },
+  {
+    "id": 2,
+    "name": "Bike",
+    "image_url": "https://res.cloudinary.com/dfd94nv9q/image/upload/v1741906975/taxi/motorbike_pqan0u.png",
+    "price": 25
+  },
+  {
+    "id": 3,
+    "name": "Car",
+    "image_url": "https://res.cloudinary.com/dfd94nv9q/image/upload/v1741906974/taxi/sedan_kwmzsx.png",
+    "price": 35
+  },
+  {
+    "id": 4,
+    "name": "Bus",
+    "image_url": "https://res.cloudinary.com/dfd94nv9q/image/upload/v1741906974/taxi/bus_qtfhhm.png",
+    "price": 60
+  },
+  {
+    "id": 5,
+    "name": "Van",
+    "image_url": "https://res.cloudinary.com/dfd94nv9q/image/upload/v1741906975/taxi/van_rdrzvp.png",
+    "price": 35
+  }
+]
