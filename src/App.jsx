@@ -12,6 +12,7 @@ import PassengerLayout from "./layouts/PassengerLayout/index.jsx";
 import AdminLayout from "./layouts/AdminLayout/index.jsx";
 import VehicleType from "./pages/admin/VehicleType/index.jsx";
 import { vehicleTypeListThunk } from "./store/thunks/vehicleTypeThunks.js";
+import Booking from "./pages/passenger/Booking/index.jsx";
 
 function App() {
   const { PASSENGER, ADMIN } = ROLES;
@@ -35,6 +36,7 @@ function App() {
           }
         >
           <Route index element={<Home />} />
+          <Route path="booking" element={<Booking />} />
         </Route>
 
         {/* Driver Routes */}
