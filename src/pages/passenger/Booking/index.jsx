@@ -1,19 +1,23 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import PageTitle from "../../../components/PageTitle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ModalUi from "../../../components/ModalUi";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import dayjs from "dayjs"; 
+import { createBookingThunk } from "../../../store/thunks/bookingThunk";
 
 const generateRandomDistance = () => {
   return (Math.random() * 100 + 1).toFixed(1);
 };
 
 const Booking = () => {
+  const dispatch = useDispatch();
   const transportOptions = useSelector(
     (state) => state.vehicleType.vehicleTypes || []
   );
+  const { status, error } = useSelector((state) => state.booking || {});
 
   const [open, setOpen] = useState(false);
   const [formState, setFormState] = useState({
@@ -41,18 +45,25 @@ const Booking = () => {
     setOpen(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries(formData.entries());
-    console.log("Form data submitted:", {
-      ...formJson,
-      date: formState.date,
-      totalDistanceKM: formState.totalDistanceKM,
-      pricePerKM: formState.pricePerKM,
-      vehicleType: formState.vehicleType,
-    });
-    handleClose();
+
+    // Prepare booking data
+    const bookingData = {
+      date: formState.date ? dayjs(formState.date).format("YYYY-MM-DD") : null,
+      pickupLocation: formState.pickupLocation,
+      destinationLocation: formState.destinationLocation,
+      totalDistanceKM: parseFloat(formState.totalDistanceKM),
+      pricePerKM: parseFloat(formState.pricePerKM),
+      vehicleTypeId: formState.vehicleType, 
+    };
+
+    try {
+      await dispatch(createBookingThunk(bookingData)).unwrap();
+      handleClose();
+    } catch (err) {
+      console.error("Booking creation failed:", err);
+    }
   };
 
   const handleChange = (event) => {
@@ -66,7 +77,7 @@ const Booking = () => {
   const handleDateChange = (date) => {
     setFormState((prevState) => ({
       ...prevState,
-      date: date,
+      date,
     }));
   };
 
@@ -82,8 +93,14 @@ const Booking = () => {
     <>
       <PageTitle title="Booking" />
       <Button variant="contained" onClick={handleClickOpen}>
-        Create new Booking
+        Create New Booking
       </Button>
+
+      {/* Display booking status */}
+      {status === "pending" && <Typography>Loading...</Typography>}
+      {status === "failed" && (
+        <Typography color="error">Error: {error}</Typography>
+      )}
 
       <ModalUi
         open={open}
@@ -97,8 +114,15 @@ const Booking = () => {
               label="Select Date"
               value={formState.date}
               onChange={handleDateChange}
+              minDate={dayjs()}
               renderInput={(params) => (
-                <TextField {...params} margin="dense" fullWidth />
+                <TextField
+                  {...params}
+                  margin="dense"
+                  fullWidth
+                  error={!formState.date}
+                  helperText={!formState.date && "Date is required"}
+                />
               )}
             />
           </LocalizationProvider>
@@ -110,6 +134,9 @@ const Booking = () => {
             fullWidth
             value={formState.pickupLocation}
             onChange={handleChange}
+            required
+            // error={!formState.pickupLocation}
+            // helperText={!formState.pickupLocation && "Pickup location is required"}
           />
           <TextField
             margin="dense"
@@ -119,8 +146,11 @@ const Booking = () => {
             fullWidth
             value={formState.destinationLocation}
             onChange={handleChange}
+            required
+            // error={!formState.destinationLocation}
+            // helperText={!formState.destinationLocation && "Destination is required"}
           />
-          {/* <TextField
+          <TextField
             margin="dense"
             name="totalDistanceKM"
             label="Total Distance (KM)"
@@ -129,7 +159,7 @@ const Booking = () => {
             value={formState.totalDistanceKM}
             onChange={handleChange}
             disabled
-          /> */}
+          />
           <TextField
             margin="dense"
             name="pricePerKM"
@@ -150,15 +180,13 @@ const Booking = () => {
                 <Button
                   key={option.id}
                   variant={
-                    formState.vehicleType === option.id
-                      ? "contained"
-                      : "outlined"
+                    formState.vehicleType === option.id ? "contained" : "outlined"
                   }
                   onClick={() => handleTransportSelect(option)}
                   sx={{ display: "flex", alignItems: "center", gap: 1 }}
                 >
                   <img
-                    src={option.image_url}
+                    src={option.imageUrl}
                     alt={option.name}
                     style={{ width: 30, height: 30 }}
                   />
