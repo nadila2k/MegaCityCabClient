@@ -1,33 +1,45 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/apiConfig";
 
-// export const vehicleTypeListThunk = createAsyncThunk(
-//   "auth/sign_in",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.get(`vehicle/list`);
-//       return response;
-//     } catch (error) {
-//       rejectWithValue(error.message);
-//     }
-//   }
-// );
-
 export const vehicleTypeListThunk = createAsyncThunk(
-  "vehicle/list", 
+  "vehicle/list",
   async (_, { rejectWithValue }) => {
     try {
-      // const response = await axiosInstance.get(`vehicle/list`);
-      // return response;
-
-      const response = await fetch(`http://localhost:5173/vehicles.json`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch vehicles data');
-      }
-      const data = await response.json();
-      return data;
+      const response = await axiosInstance.get(`vehicle/all/vehicles`);
+      return response.data;
     } catch (error) {
       rejectWithValue(error.message);
+    }
+  }
+);
+
+export const vehicleTypeCreateThunk = createAsyncThunk(
+  "vehicle/create",
+  async ({ name, price, image }, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      
+      const vehicleTypeRequest = {
+        name,
+        price,
+      };
+      
+      formData.append("vehicleTypeRequest", JSON.stringify(vehicleTypeRequest));
+      
+      if (image) {
+        formData.append("image", image);
+      }
+
+      const response = await axiosInstance.post(`vehicle/create`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      // const response = await axiosInstance.post(`vehicle/create`, formData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
     }
   }
 );

@@ -250,7 +250,6 @@ export default function AdminLayout() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        <div>Admin Layout </div>
         <Outlet />
       </Box>
     </Box>

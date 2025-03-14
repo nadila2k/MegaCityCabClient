@@ -13,11 +13,19 @@ import AdminLayout from "./layouts/AdminLayout/index.jsx";
 import VehicleType from "./pages/admin/VehicleType/index.jsx";
 import { vehicleTypeListThunk } from "./store/thunks/vehicleTypeThunks.js";
 import Booking from "./pages/passenger/Booking/index.jsx";
+import useAuth from "./hooks/useAuth.jsx";
+import { useEffect } from "react";
 
 function App() {
   const { PASSENGER, ADMIN } = ROLES;
   const dispatch = useDispatch();
-  dispatch(vehicleTypeListThunk());
+  const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(vehicleTypeListThunk());
+    }
+  }, [isAuthenticated]);
 
   return (
     <Router>
