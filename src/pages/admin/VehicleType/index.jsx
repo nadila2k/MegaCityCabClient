@@ -104,7 +104,7 @@ const VehicleType = () => {
             <TableHead sx={{ backgroundColor: "#1976d2" }}>
               <TableRow>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>
-                  ID
+                  No
                 </TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                   Name
@@ -118,9 +118,9 @@ const VehicleType = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {vehicleTypes.map((vehicle) => (
+              {vehicleTypes.map((vehicle, index) => (
                 <TableRow key={vehicle.id}>
-                  <TableCell>{vehicle.id}</TableCell>
+                  <TableCell>{++index}</TableCell>
                   <TableCell>{vehicle.name}</TableCell>
                   <TableCell>{vehicle.price}</TableCell>
                   <TableCell>
