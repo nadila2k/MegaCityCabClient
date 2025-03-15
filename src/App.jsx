@@ -20,6 +20,7 @@ import DriverLayout from "./layouts/DriverLayout/index.jsx";
 import PickBooking from "./pages/driver/PickBooking/index.jsx";
 import ConfirmedBooking from "./pages/driver/ConfirmedBooking/index.jsx";
 import Completed from "./pages/driver/Completed/index.jsx";
+import DriverManage from "./pages/admin/DriverManage/index.jsx";
 
 
 function App() {
@@ -79,6 +80,7 @@ function App() {
         >
           <Route index element={<AdminHome />} />
           <Route path="vehicle-type" element={<VehicleType />} />
+          <Route path="driver-manage" element={<DriverManage />} />
         </Route>
 
         {/* Comman Routes */}

@@ -21,6 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import HomeIcon from "@mui/icons-material/Home";
 import DirectionsCarFilledIcon from '@mui/icons-material/DirectionsCarFilled';
 import ProfileBadge from "../../components/ProfileBadge";
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 const drawerWidth = 240;
 
@@ -237,6 +238,55 @@ export default function AdminLayout() {
               </ListItemIcon>
               <ListItemText
                 primary={`Vehicle Type`}
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={[
+                {
+                  minHeight: 48,
+                  px: 2.5,
+                },
+                open
+                  ? {
+                      justifyContent: "initial",
+                    }
+                  : {
+                      justifyContent: "center",
+                    },
+              ]}
+              component={NavLink}
+              to={`driver-manage`}
+            >
+              <ListItemIcon
+                sx={[
+                  {
+                    minWidth: 0,
+                    justifyContent: "center",
+                  },
+                  open
+                    ? {
+                        mr: 3,
+                      }
+                    : {
+                        mr: "auto",
+                      },
+                ]}
+              >
+                <SupervisorAccountIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={`Driver Manage`}
                 sx={[
                   open
                     ? {
