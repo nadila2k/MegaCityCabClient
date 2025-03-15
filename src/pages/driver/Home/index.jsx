@@ -152,10 +152,10 @@ const Home = () => {
 
   // Handle complete trip button click
   const handleCompleteTrip = async (booking) => {
-    if (booking.payment.paymentStatus !== "PAID") {
-      alert("Payment not completed");
-      return;
-    }
+    // if (booking.payment.paymentStatus !== "PAID") {
+    //   alert("Payment not completed");
+    //   return;
+    // }
 
     try {
       await axios.put(
