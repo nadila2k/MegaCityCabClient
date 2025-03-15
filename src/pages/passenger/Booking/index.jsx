@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
 import { createBookingThunk } from "../../../store/thunks/bookingThunk";
 import axios from "axios";
+import { useNotification } from "../../../context/NotificationContext";
 
 const generateRandomDistance = () => {
   return (Math.random() * 100 + 1).toFixed(1);
@@ -28,6 +29,7 @@ const generateRandomDistance = () => {
 
 const Booking = () => {
   const dispatch = useDispatch();
+  const { showNotification } = useNotification();
   const transportOptions = useSelector(
     (state) => state.vehicleType.vehicleTypes || []
   );
@@ -44,6 +46,7 @@ const Booking = () => {
   });
   const [bookings, setBookings] = useState([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [errorBookings, setErrorBookings] = useState(null);
 
   // Fetch passenger bookings
@@ -98,7 +101,9 @@ const Booking = () => {
     };
 
     try {
+      setLoadingSubmit(true)
       await dispatch(createBookingThunk(bookingData)).unwrap();
+      showNotification("Created successfully", "success");
       handleClose();
       const response = await axios.get(
         "http://localhost:8080/api/v1/booking/get/bookings/passenger",
@@ -110,7 +115,10 @@ const Booking = () => {
       );
       setBookings(response.data.data);
     } catch (err) {
+      showNotification("Created error", "error");
       console.error("Booking creation failed:", err);
+    }finally {
+      setLoadingSubmit(false)
     }
   };
 
@@ -288,6 +296,7 @@ const Booking = () => {
         onClose={handleClose}
         onSubmit={handleSubmit}
         title="New Booking"
+        isLoading={loadingSubmit}
       >
         <Box mt={2}>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
