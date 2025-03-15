@@ -37,7 +37,7 @@ const Welcome = () => {
             </Button>
             <Button
               component={Link}
-              to="/sign-up"
+              to="/sign-up?role=PASSENGER"
               variant="contained"
               color="primary"
               className={styles.authButton}
@@ -52,12 +52,18 @@ const Welcome = () => {
           <Typography variant="h2" className={styles.heroTitle}>
             Ride with Comfort & Safety
           </Typography>
-          <Typography variant="h6" className={styles.heroSubtitle}>
-            Book a ride instantly and enjoy a seamless experience wherever you go.
+          <Typography variant="h4" className={styles.heroSubtitle} mt={2}>
+            Book a ride instantly and enjoy a seamless experience wherever you
+            go.
           </Typography>
-          <Typography variant="body1" className={styles.heroText}>
-            Whether it’s a quick trip across town or a long journey, TaxiRide ensures you travel
-            with ease, reliability, and peace of mind.
+          <Typography
+            variant="h6"
+            className={styles.heroSubtitle}
+            mt={3}
+            mb={4}
+          >
+            Whether it’s a quick trip across town or a long journey, TaxiRide
+            ensures you travel with ease, reliability, and peace of mind.
           </Typography>
           <Button
             component={Link}
@@ -65,13 +71,14 @@ const Welcome = () => {
             variant="contained"
             color="secondary"
             className={styles.ctaButton}
+            mt={3}
           >
             Get Started
           </Button>
         </section>
 
         {/* Features Section */}
-        <Grid container spacing={3} className={styles.features}>
+        <Grid container spacing={3} className={styles.features} mt={3}>
           <Grid item xs={12} md={4}>
             <Card>
               <CardContent>
@@ -80,8 +87,8 @@ const Welcome = () => {
                   Fast Booking
                 </Typography>
                 <Typography variant="body2">
-                  Book your ride in seconds with our intuitive app. Choose your destination, select
-                  a vehicle, and you’re on your way!
+                  Book your ride in seconds with our intuitive app. Choose your
+                  destination, select a vehicle, and you’re on your way!
                 </Typography>
               </CardContent>
             </Card>
@@ -94,8 +101,8 @@ const Welcome = () => {
                   Safe & Secure
                 </Typography>
                 <Typography variant="body2">
-                  All rides are insured, and our drivers undergo rigorous background checks for
-                  your safety and comfort.
+                  All rides are insured, and our drivers undergo rigorous
+                  background checks for your safety and comfort.
                 </Typography>
               </CardContent>
             </Card>
@@ -108,8 +115,8 @@ const Welcome = () => {
                   Affordable Pricing
                 </Typography>
                 <Typography variant="body2">
-                  Enjoy competitive rates with transparent pricing—no hidden fees, just great
-                  value for every ride.
+                  Enjoy competitive rates with transparent pricing—no hidden
+                  fees, just great value for every ride.
                 </Typography>
               </CardContent>
             </Card>
@@ -127,8 +134,8 @@ const Welcome = () => {
                 24/7 Availability
               </Typography>
               <Typography variant="body1">
-                Need a ride at midnight or early morning? We’re here for you around the clock with
-                reliable service.
+                Need a ride at midnight or early morning? We’re here for you
+                around the clock with reliable service.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -136,8 +143,8 @@ const Welcome = () => {
                 Real-Time Tracking
               </Typography>
               <Typography variant="body1">
-                Track your driver’s location in real-time and stay informed about your ride’s
-                progress.
+                Track your driver’s location in real-time and stay informed
+                about your ride’s progress.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -145,8 +152,8 @@ const Welcome = () => {
                 Eco-Friendly Options
               </Typography>
               <Typography variant="body1">
-                Choose from our range of hybrid and electric vehicles to reduce your carbon
-                footprint.
+                Choose from our range of hybrid and electric vehicles to reduce
+                your carbon footprint.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -154,8 +161,8 @@ const Welcome = () => {
                 Customer Support
               </Typography>
               <Typography variant="body1">
-                Our dedicated support team is ready to assist you with any questions or issues,
-                anytime.
+                Our dedicated support team is ready to assist you with any
+                questions or issues, anytime.
               </Typography>
             </Grid>
           </Grid>
@@ -167,11 +174,12 @@ const Welcome = () => {
             Ready to Ride?
           </Typography>
           <Typography variant="body1" className={styles.ctaText}>
-            Join thousands of happy passengers who trust TaxiRide for their daily travel needs.
+            Join thousands of happy passengers who trust TaxiRide for their
+            daily travel needs.
           </Typography>
           <Button
             component={Link}
-            to="/signup"
+            to="/sign-up?role=PASSENGER"
             variant="contained"
             color="primary"
             className={styles.ctaButton}
