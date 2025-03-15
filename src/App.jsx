@@ -21,6 +21,8 @@ import PickBooking from "./pages/driver/PickBooking/index.jsx";
 import ConfirmedBooking from "./pages/driver/ConfirmedBooking/index.jsx";
 import Completed from "./pages/driver/Completed/index.jsx";
 import DriverManage from "./pages/admin/DriverManage/index.jsx";
+import Profile from "./pages/passenger/Profile/index.jsx";
+import DriverProfile from "./pages/driver/Profile/index.jsx";
 
 
 function App() {
@@ -52,6 +54,7 @@ function App() {
         >
           <Route index element={<Home />} />
           <Route path="booking" element={<Booking />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
 
         {/* Driver Routes */}
@@ -67,6 +70,7 @@ function App() {
           <Route path="pick-booking" element={<PickBooking />} />
           <Route path="confirmed-booking" element={<ConfirmedBooking />} />
           <Route path="completed" element={<Completed />} />
+          <Route path="profile" element={<DriverProfile />} />
         </Route>
 
         {/* Admin Routes */}
