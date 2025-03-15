@@ -72,7 +72,6 @@ const DriverManage = () => {
         vehicaleName: selectedDriver.vehicaleName,
         vehicalNumber: selectedDriver.vehicalNumber,
         vehicleTypeId: selectedDriver.vehicleTypeId,
-        vehicleTypeId: selectedDriver.vehicleTypeId,
         image: "",
       };
 
