@@ -5,7 +5,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 
-export default function ModalUi({ open, onClose, onSubmit, title, children }) {
+export default function ModalUi({
+  open,
+  onClose,
+  onSubmit,
+  title,
+  children,
+  isLoading = false,
+}) {
   return (
     <Dialog
       open={open}
@@ -32,7 +39,9 @@ export default function ModalUi({ open, onClose, onSubmit, title, children }) {
       <DialogContent>{children}</DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" loading={isLoading}>
+          Submit
+        </Button>
       </DialogActions>
     </Dialog>
   );

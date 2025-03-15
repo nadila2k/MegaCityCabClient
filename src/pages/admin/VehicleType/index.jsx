@@ -17,12 +17,14 @@ import {
   vehicleTypeCreateThunk,
   vehicleTypeListThunk,
 } from "../../../store/thunks/vehicleTypeThunks";
+import { useNotification } from "../../../context/NotificationContext";
 
 const VehicleType = () => {
   const dispatch = useDispatch();
   const { vehicleTypes, status, error } = useSelector(
     (state) => state.vehicleType
   );
+  const { showNotification } = useNotification();
 
   const [open, setOpen] = useState(false);
   const [formState, setFormState] = useState({
@@ -62,7 +64,9 @@ const VehicleType = () => {
         })
       ).unwrap();
       handleClose();
+      showNotification("Created successfully", "success");
     } catch (error) {
+      showNotification("Created error", "error");
       console.error("Error creating vehicle:", error);
     }
   };
@@ -82,6 +86,8 @@ const VehicleType = () => {
     }));
   };
 
+  const isLoading = status === REDUX_STATUS.PENDING;
+
   return (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
@@ -92,7 +98,7 @@ const VehicleType = () => {
       </Box>
 
       {/* Loading and Error States */}
-      {status === REDUX_STATUS.PENDING && <Typography>Loading...</Typography>}
+      {isLoading && <Typography>Loading...</Typography>}
       {status === REDUX_STATUS.FAILED && (
         <Typography color="error">Error: {error}</Typography>
       )}
@@ -143,6 +149,7 @@ const VehicleType = () => {
         onClose={handleClose}
         onSubmit={handleSubmit}
         title="Create Vehicle Type"
+        isLoading={isLoading}
       >
         <Box mt={2}>
           <TextField
