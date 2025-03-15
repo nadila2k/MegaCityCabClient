@@ -72,7 +72,7 @@ const DriverManage = () => {
     event.preventDefault();
     setIsUpdateSubmit(true);
     if (!selectedDriver) return;
-
+  
     try {
       const updatePayload = {
         firstName: selectedDriver.firstName,
@@ -84,38 +84,29 @@ const DriverManage = () => {
         vehicalNumber: selectedDriver.vehicalNumber,
         vehicleTypeId: selectedDriver.vehicleTypeId,
       };
-
-      let response;
+  
+      // Always use FormData to ensure consistent request format
+      const formData = new FormData();
+      Object.entries(updatePayload).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+  
+      // Only append image if it exists (optional)
       if (selectedDriver.image) {
-        const formData = new FormData();
-        Object.entries(updatePayload).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
         formData.append("image", selectedDriver.image);
-
-        response = await axios.put(
-          `http://localhost:8080/api/v1/admin/update/${selectedDriver.id}/driver`,
-          formData,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-      } else {
-        response = await axios.put(
-          `http://localhost:8080/api/v1/admin/update/${selectedDriver.id}/driver`,
-          updatePayload,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
       }
-
+  
+      const response = await axios.put(
+        `http://localhost:8080/api/v1/admin/update/${selectedDriver.id}/driver`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+  
       setDrivers((prevDrivers) =>
         prevDrivers.map((d) =>
           d.id === selectedDriver.id ? response.data.data : d
@@ -124,7 +115,7 @@ const DriverManage = () => {
       showNotification("Updated successfully", "success");
       handleClose();
     } catch (err) {
-      showNotification("Updated error", "error");
+      showNotification("Update error", "error");
       setError(err.message);
     } finally {
       setIsUpdateSubmit(false);
