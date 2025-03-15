@@ -15,6 +15,8 @@ const SignIn = () => {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleInput = (e) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
@@ -22,6 +24,7 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const response = await dispatch(signInThunk(user)).unwrap();
       if (response.status === "SUCCESS") {
@@ -30,6 +33,8 @@ const SignIn = () => {
       }
     } catch (error) {
       console.log("Error ", error);
+    } finally {
+      setLoading(true);
     }
   };
 
@@ -81,6 +86,7 @@ const SignIn = () => {
           fullWidth
           sx={{ mt: 2 }}
           onClick={handleSubmit}
+          loading={loading}
         >
           Sign In
         </Button>
