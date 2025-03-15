@@ -13,11 +13,13 @@ import { ROLES } from "../../constants/app.constants";
 import { signUpThunk } from "../../store/thunks/authThunks";
 import { useDispatch } from "react-redux";
 import axios from "axios"; // Import axios for API calls
+import { useNotification } from "../../context/NotificationContext";
 
 const SignUp = () => {
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   const [passenger, setPassenger] = useState({
     firstName: "",
@@ -102,8 +104,10 @@ const SignUp = () => {
           roles: ROLES.PASSENGER,
         });
         navigate(`/${roleUrl}`);
+        showNotification("SignUp successfully", "success");
       }
     } catch (error) {
+      showNotification("SignUp successfully", "error");
       console.log("Error ", error);
     } finally {
       setLoading(false);
@@ -137,8 +141,10 @@ const SignUp = () => {
           roles: ROLES.DRIVER,
         });
         navigate(`/${roleUrl}`);
+        showNotification("SignUp successfully", "success");
       }
     } catch (error) {
+      showNotification("SignUp successfully", "error");
       console.log("Error ", error);
     } finally {
       setLoading(false);

@@ -5,10 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { ROLES } from "../../constants/app.constants";
 import { useDispatch } from "react-redux";
 import { signInThunk } from "../../store/thunks/authThunks";
+import { useNotification } from "../../context/NotificationContext";
 
 const SignIn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showNotification } = useNotification();
 
   const [user, setUser] = useState({
     email: "",
@@ -28,10 +30,12 @@ const SignIn = () => {
     try {
       const response = await dispatch(signInThunk(user)).unwrap();
       if (response.status === "SUCCESS") {
+        showNotification("SignIn successfully", "success");
         console.log("handleSubmit ", response.data);
         navigate(`/${response.data.userData.roles}`);
       }
     } catch (error) {
+      showNotification("SignIn Error", "error");
       console.log("Error ", error);
     } finally {
       setLoading(true);
