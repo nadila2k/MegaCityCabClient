@@ -16,23 +16,34 @@ import ModalUi from "../../../components/ModalUi";
 import PageTitle from "../../../components/PageTitle";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { useNotification } from "../../../context/NotificationContext";
 
 const DriverManage = () => {
+  const { showNotification } = useNotification();
+
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
-  const vehicleTypes = useSelector((state) => state.vehicleType.vehicleTypes || []);
+  const [isDeleteSubmit, setIsDeleteSubmit] = useState(false);
+  const [isUpdateSubmit, setIsUpdateSubmit] = useState(false);
+
+  const vehicleTypes = useSelector(
+    (state) => state.vehicleType.vehicleTypes || []
+  );
 
   useEffect(() => {
     const fetchDrivers = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/v1/driver/all/drivers", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/driver/all/drivers",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
         setDrivers(response.data.data);
         setLoading(false);
       } catch (err) {
@@ -48,7 +59,7 @@ const DriverManage = () => {
     setSelectedDriver({
       ...driver,
       vehicleTypeId: driver.vehicleType.id,
-      image: null
+      image: null,
     });
     setOpenModal(true);
   };
@@ -60,6 +71,7 @@ const DriverManage = () => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
+    setIsUpdateSubmit(true);
     if (!selectedDriver) return;
 
     try {
@@ -72,7 +84,6 @@ const DriverManage = () => {
         vehicaleName: selectedDriver.vehicaleName,
         vehicalNumber: selectedDriver.vehicalNumber,
         vehicleTypeId: selectedDriver.vehicleTypeId,
-        image: "",
       };
 
       let response;
@@ -94,7 +105,6 @@ const DriverManage = () => {
           }
         );
       } else {
-
         response = await axios.put(
           `http://localhost:8080/api/v1/admin/update/${selectedDriver.id}/driver`,
           updatePayload,
@@ -112,19 +122,26 @@ const DriverManage = () => {
           d.id === selectedDriver.id ? response.data.data : d
         )
       );
+      showNotification("Updated successfully", "success");
       handleClose();
     } catch (err) {
+      showNotification("Updated error", "error");
       setError(err.message);
+    } finally {
+      setIsUpdateSubmit(false);
     }
   };
 
   const handleDelete = async (driverId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/admin/delete/${driverId}/driver`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
+      await axios.delete(
+        `http://localhost:8080/api/v1/admin/delete/${driverId}/driver`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
       setDrivers((prevDrivers) => prevDrivers.filter((d) => d.id !== driverId));
     } catch (err) {
       setError(err.message);
@@ -155,7 +172,12 @@ const DriverManage = () => {
 
   return (
     <>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
         <PageTitle title="Manage Drivers" />
       </Box>
 
@@ -220,6 +242,7 @@ const DriverManage = () => {
           onClose={handleClose}
           onSubmit={handleUpdate}
           title="Edit Driver"
+          isLoading={isUpdateSubmit}
         >
           <Box mt={2}>
             <TextField
@@ -319,7 +342,9 @@ const DriverManage = () => {
             </Box>
 
             <Box mt={2}>
-              <Typography variant="subtitle1">Update Driver Image (Optional):</Typography>
+              <Typography variant="subtitle1">
+                Update Driver Image (Optional):
+              </Typography>
               <input
                 type="file"
                 accept="image/*"
