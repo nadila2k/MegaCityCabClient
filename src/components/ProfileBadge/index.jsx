@@ -59,7 +59,6 @@ const ProfileBadge = () => {
             <NavLink to="profile">Profile</NavLink>
           </MenuItem>
         )}
-
         <MenuItem onClick={handleSignOut}>
           <Typography variant="body1" color="error">
             Sign Out
