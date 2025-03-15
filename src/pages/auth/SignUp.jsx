@@ -39,22 +39,25 @@ const SignUp = () => {
     licenseNumber: "",
     vehicleName: "",
     vehicalNumber: "",
-    vehicleTypeId: "", 
+    vehicleTypeId: "",
     image: null,
     roles: ROLES.DRIVER,
   });
 
-  const [vehicleTypes, setVehicleTypes] = useState([]); // State for vehicle types from API
+  const [loading, setLoading] = useState(false);
+
+  const [vehicleTypes, setVehicleTypes] = useState([]);
   const [isPasswordMatch, setIsPasswordMatch] = useState(true);
 
   const role = searchParams.get("role");
   const roleUrl = role.toLowerCase();
 
-  // Fetch vehicle types from API when component mounts
   useEffect(() => {
     const fetchVehicleTypes = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/v1/vehicle/all/vehicles/public");
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/vehicle/all/vehicles/public"
+        );
         setVehicleTypes(response.data.data);
       } catch (error) {
         console.error("Error fetching vehicle types:", error);
@@ -84,6 +87,7 @@ const SignUp = () => {
 
   const handlePassengerSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const { passwordConfrim, ...rest } = passenger;
     try {
       const response = await dispatch(signUpThunk(rest)).unwrap();
@@ -96,16 +100,19 @@ const SignUp = () => {
           address: "",
           password: "",
           roles: ROLES.PASSENGER,
-        })
+        });
         navigate(`/${roleUrl}`);
       }
     } catch (error) {
       console.log("Error ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDriverSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     const formData = new FormData();
     for (const key in driver) {
       if (key !== "passwordConfrim") {
@@ -125,14 +132,16 @@ const SignUp = () => {
           licenseNumber: "",
           vehicleName: "",
           vehicleNumber: "",
-          vehicleTypeId: "", 
+          vehicleTypeId: "",
           image: null,
           roles: ROLES.DRIVER,
-        })
+        });
         navigate(`/${roleUrl}`);
       }
     } catch (error) {
       console.log("Error ", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -236,6 +245,7 @@ const SignUp = () => {
           sx={{ mt: 2 }}
           onClick={handlePassengerSubmit}
           disabled={!isPasswordMatch}
+          loading={loading}
         >
           Sign Up
         </Button>
@@ -352,7 +362,7 @@ const SignUp = () => {
           sx={{ textAlign: "left" }}
           name="vehicleTypeId"
           onChange={handleDriverInput}
-          value={driver.vehicleTypeId || ""} 
+          value={driver.vehicleTypeId || ""}
         >
           {vehicleTypes.map((option) => (
             <MenuItem key={option.id} value={option.id}>
@@ -391,6 +401,7 @@ const SignUp = () => {
           sx={{ mt: 2 }}
           onClick={handleDriverSubmit}
           disabled={!isPasswordMatch}
+          loading={loading}
         >
           Sign Up
         </Button>
