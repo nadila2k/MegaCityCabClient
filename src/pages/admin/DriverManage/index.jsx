@@ -26,7 +26,6 @@ const DriverManage = () => {
   const [error, setError] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [selectedDriver, setSelectedDriver] = useState(null);
-  const [isDeleteSubmit, setIsDeleteSubmit] = useState(false);
   const [isUpdateSubmit, setIsUpdateSubmit] = useState(false);
 
   const vehicleTypes = useSelector(
@@ -143,7 +142,9 @@ const DriverManage = () => {
         }
       );
       setDrivers((prevDrivers) => prevDrivers.filter((d) => d.id !== driverId));
+      showNotification("Deleted successfully", "success");
     } catch (err) {
+      showNotification("Deleted error", "error");
       setError(err.message);
     }
   };
