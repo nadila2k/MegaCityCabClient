@@ -18,8 +18,10 @@ import MapIcon from "@mui/icons-material/Map";
 import PaidIcon from "@mui/icons-material/Paid";
 import PersonIcon from "@mui/icons-material/Person";
 import axios from "axios";
+import { useNotification } from "../../../context/NotificationContext";
 
 const Home = () => {
+  const { showNotification } = useNotification();
   const [dashboardData, setDashboardData] = useState(() => {
     const storedData = localStorage.getItem("dashboardData");
     return storedData
@@ -188,7 +190,9 @@ const Home = () => {
       setShowOngoingTrip(false); // Hide ongoing trip section
 
       console.log(`Booking ID ${booking.id} updated to COMPLETED`);
+      showNotification("Completed successfully", "success");
     } catch (err) {
+      showNotification("Completed error", "error");
       console.error(`Failed to update booking ID ${booking.id}:`, err.message);
       setError(`Failed to update booking: ${err.message}`);
     }
